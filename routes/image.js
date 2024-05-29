@@ -3,6 +3,7 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const Baraja = require('../clases/Baraja');
+const Naipes = require('../clases/Naipes');
 const directoryPath = path.join(__dirname, '../public/images/Baraja');
 
 // Crear una instancia de Baraja
@@ -14,7 +15,7 @@ router.post('/', (req, res) => {
       return res.status(500).send('Error reading directory');
     }
     // Inicializar la baraja con las cartas del directorio
-    baraja.inicializarBaraja(files);
+    baraja.inicializarBarajaEspañola(files);
     res.render('imagenesBaraja', { files });
   });
 });
@@ -22,7 +23,10 @@ router.post('/', (req, res) => {
 router.post('/barajar', (req, res) => {
   // Barajar la baraja
   baraja.barajarBaraja();
-  res.render('imagenesBaraja', { title: 'Baraja Española', files: baraja.cartas });
+  const rutaImagenes = baraja.cartas.map(carta => carta.rutaImagen);
+  
+  // Renderizar la plantilla con las rutas de imágenes
+  res.render('barajar', { title: 'Baraja Española', files: rutaImagenes });
 });
 
 router.post('/extraerCarta', (req, res) => {
@@ -30,26 +34,28 @@ router.post('/extraerCarta', (req, res) => {
   if (!cartaExtraida) {
     return res.status(400).send({ message: 'No hay más cartas en la baraja' });
   }
-  res.render('cartaExtraida', { title: 'Carta Extraída', carta: cartaExtraida });
+  res.render('cartaExtraida', { title: 'Carta Extraída', rutaImagen: cartaExtraida.rutaImagen });
 });
+
 
 router.post('/extraerPrimeraCarta', (req, res) => {
   const primeraCarta = baraja.extraerPrimeraCarta();
   if (!primeraCarta) {
     return res.status(400).send({ message: 'No hay más cartas en la baraja' });
   }
-  res.render('cartaExtraida', { title: 'Primera Carta Extraída', carta: primeraCarta });
+  res.render('cartaExtraida', { title: 'Primera Carta Extraída', rutaImagen: primeraCarta.rutaImagen });
 });
-
+/*
 router.post('/devolverCarta', (req, res) => {
-  const carta = req.body.carta;
-  if (!carta) {
-    return res.status(400).send({ message: 'Falta información de la carta' });
+  const exito = baraja.devolverCartasExtraidas();
+  console.log(exito);
+  if (exito) {
+    res.send({ message: 'Cartas devueltas al mazo principal exitosamente' });
+  } else {
+    console.error('Error al devolver las cartas al mazo principal');
+    res.status(500).send({ message: 'Error al devolver las cartas al mazo principal' });
   }
-  // Devolver la carta a la baraja
-  baraja.devolverCarta(carta);
-  res.send({ message: 'Carta devuelta al mazo exitosamente' });
-});
+});*/
 
 router.post('/inicializarBaraja', (req, res) => {
   fs.readdir(directoryPath, (err, files) => {
@@ -57,7 +63,7 @@ router.post('/inicializarBaraja', (req, res) => {
       return res.status(500).send('Error reading directory');
     }
     // Inicializar la baraja con las cartas del directorio
-    baraja.inicializarBaraja(files);
+    baraja.inicializarBarajaEspañola(files);
     res.render('imagenesBaraja', { files });
   });
 });

@@ -23,7 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/image', imagesRouter);
-app.use(express.static('public/image'));
+app.use('/images', express.static('images'));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -41,4 +42,9 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+const port = 3000;
+// Iniciar el servidor
+app.listen(port, () => {
+  console.log(`Servidor ejecutándose en http://localhost:${port}`);
+});
 module.exports = app;

@@ -1,17 +1,28 @@
-const Naipes = require('./Naipes');
-//+numNaipes:int
+const Naipe = require("./Naipes");
+
 class Baraja {
-  constructor() {
+  constructor(numNaipes) {
+    this.numNaipes = numNaipes;
     this.cartas = [];
+    this.cartasExtraidas = []; // Nuevo array para almacenar las cartas extraídas
   }
 
+  // Método estático para generar la baraja española
+  static generarBarajaEspañola() {
+    const palos = ["C", "E", "O", "B"]; // Copas, Espadas, Oros, Bastos
+    const valores = ["1", "2", "3", "4", "5", "6", "7", "10", "11", "12"]; 
+    const baraja = [];
+    palos.forEach((palo) => {
+      valores.forEach((valor) => {
+        baraja.push(new Naipe(palo, valor));
+      });
+    });
+    return baraja;
+  }
 
-//la baraja tiene que ser un conjunto de naipes, toda baraja tiene de 0 a indefinicdos numero de naipes
-//los naipes pueden en estar en cero o 1 baraja
-
-
-  inicializarBaraja(cartas) {
-    this.cartas = cartas;
+  // Inicializar la baraja con la baraja española
+  inicializarBarajaEspañola() {
+    this.cartas = Baraja.generarBarajaEspañola();
   }
 
   barajarBaraja() {
@@ -20,35 +31,59 @@ class Baraja {
       [this.cartas[i], this.cartas[j]] = [this.cartas[j], this.cartas[i]];
     }
   }
-  //devuelve un naipe
+  /*
   extraerCartaAleatoria() {
     if (this.cartas.length === 0) {
       return null; // No hay cartas en la baraja
     }
     const cartaIndex = Math.floor(Math.random() * this.cartas.length);
-    return this.cartas.splice(cartaIndex, 1)[0]; // Devuelve la carta extraída
+    const cartaExtraida = this.cartas.splice(cartaIndex, 1)[0];
+    console.log("Valor de la carta extraída:", cartaExtraida.valor);
+    console.log("Palo de la carta extraída:", cartaExtraida.palo);
+    return new Naipe(cartaExtraida.palo, cartaExtraida.valor); // Devuelve la carta extraída como un objeto Naipe
+  }*/
+  extraerCartaAleatoria() {
+    if (this.cartas.length === 0) {
+      return null; // No hay cartas en la baraja
+    }
+    const cartaIndex = Math.floor(Math.random() * this.cartas.length);
+    const cartaExtraida = this.cartas.splice(cartaIndex, 1)[0];
+    console.log("Valor de la carta extraída:", cartaExtraida.valor);
+    console.log("Palo de la carta extraída:", cartaExtraida.palo);
+    const naipe = new Naipe(cartaExtraida.palo, cartaExtraida.valor);
+    this.cartasExtraidas.push(naipe); // Agregar la carta extraída al array de cartas extraídas
+    return naipe; // Devuelve la carta extraída como un objeto Naipe
   }
-  //devuelve un naipe
+
+  // Método para devolver las cartas extraídas al mazo principal
+  devolverCartasExtraidas() {
+    this.cartas = this.cartas.concat(this.cartasExtraidas); // Agregar las cartas extraídas al mazo principal
+    this.cartasExtraidas = []; // Vaciar el array de cartas extraídas
+  }
+
+
+
+
+
+
+
   extraerPrimeraCarta() {
     if (this.cartas.length === 0) {
-      return null; 
+      return null;
     }
-    return this.cartas.shift(); // Extrae y devuelve la primera carta del mazo
+    const primeraCarta = this.cartas.shift();
+    return new Naipe(primeraCarta.palo, primeraCarta.valor); // Devuelve la primera carta del mazo como un objeto Naipe
   }
- 
 
-  //extraerUltimo, devuelve un naipe
   extraerUltimaCarta() {
     if (this.cartas.length === 0) {
-      return null; 
+      return null;
     }
-    return this.cartas.shift(); // Extrae y devuelve la primera carta del mazo
+    const ultimaCarta = this.cartas.pop();
+    return new Naipe(ultimaCarta.palo, ultimaCarta.valor); // Devuelve la última carta del mazo como un objeto Naipe
   }
 
-  //devolver(naipe):bool
-  devolverCarta(carta) {
-    this.cartas.push(carta); // Agrega la carta devuelta al mazo
-  }
+  
 }
 
 module.exports = Baraja;

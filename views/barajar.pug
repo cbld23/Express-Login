@@ -1,0 +1,12 @@
+
+extends layout
+
+block content
+  #container
+    h1 Tu baraja
+    .mosaico-wrapper(style='border: 1px solid red; padding: 10px;')
+      .mosaico-container(style='display: flex; flex-wrap: wrap; justify-content: space-between;')
+        each file in files
+          .card(style='width: calc(12% - 15px); margin-bottom: 20px; color: black;')
+            img.card-img-top(src=`${file}`, alt="Carta")
+

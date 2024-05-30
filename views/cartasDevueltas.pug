@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  .mosaico-wrapper(style='border: 1px solid red; padding: 10px;')
+    .mosaico-container(style='display: flex; flex-wrap: wrap; justify-content: center; align-items: center; height: 100vh;')
+      each carta in cartas
+        .card(style='width: 20%; margin-bottom: 20px; color: black;')
+          img.card-img-top(src=carta.rutaImagen, alt=`Carta de ${carta.palo} ${carta.valor}`)
+  .buttons(style='display: flex; justify-content: center; margin-top: 20px;')
+    

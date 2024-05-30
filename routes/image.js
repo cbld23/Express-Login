@@ -45,17 +45,17 @@ router.post('/extraerPrimeraCarta', (req, res) => {
   }
   res.render('cartaExtraida', { title: 'Primera Carta Extraída', rutaImagen: primeraCarta.rutaImagen });
 });
-/*
+
+// Ruta para devolver todas las cartas extraídas
 router.post('/devolverCarta', (req, res) => {
-  const exito = baraja.devolverCartasExtraidas();
-  console.log(exito);
-  if (exito) {
-    res.send({ message: 'Cartas devueltas al mazo principal exitosamente' });
-  } else {
-    console.error('Error al devolver las cartas al mazo principal');
-    res.status(500).send({ message: 'Error al devolver las cartas al mazo principal' });
+  const cartasDevueltas = baraja.devolverCartasExtraidas();
+  if (!cartasDevueltas) {
+    console.log('Error al devolver las cartas al mazo principal');
+    return res.status(500).send({ message: 'Error al devolver las cartas al mazo principal' });
   }
-});*/
+  console.log('Cartas devueltas al mazo principal exitosamente');
+  res.render('cartasDevueltas', { title: 'Cartas Devueltas', cartas: cartasDevueltas });
+});
 
 router.post('/inicializarBaraja', (req, res) => {
   fs.readdir(directoryPath, (err, files) => {

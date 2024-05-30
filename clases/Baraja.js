@@ -55,16 +55,6 @@ class Baraja {
     return naipe; // Devuelve la carta extraída como un objeto Naipe
   }
 
-  // Método para devolver las cartas extraídas al mazo principal
-  devolverCartasExtraidas() {
-    this.cartas = this.cartas.concat(this.cartasExtraidas); // Agregar las cartas extraídas al mazo principal
-    this.cartasExtraidas = []; // Vaciar el array de cartas extraídas
-  }
-
-
-
-
-
 
 
   extraerPrimeraCarta() {
@@ -72,7 +62,9 @@ class Baraja {
       return null;
     }
     const primeraCarta = this.cartas.shift();
-    return new Naipe(primeraCarta.palo, primeraCarta.valor); // Devuelve la primera carta del mazo como un objeto Naipe
+    const naipe = new Naipe(primeraCarta.palo, primeraCarta.valor); 
+    this.cartasExtraidas.push(naipe); 
+    return naipe; // Devuelve la primera carta del mazo como un objeto Naipe
   }
 
   extraerUltimaCarta() {
@@ -80,9 +72,23 @@ class Baraja {
       return null;
     }
     const ultimaCarta = this.cartas.pop();
-    return new Naipe(ultimaCarta.palo, ultimaCarta.valor); // Devuelve la última carta del mazo como un objeto Naipe
+    const naipe = new Naipe(ultimaCarta.palo, ultimaCarta.valor);
+    this.cartasExtraidas.push(naipe); 
+    return  naipe;// Devuelve la última carta del mazo como un objeto Naipe
   }
 
+// Devolver todas las cartas extraídas al mazo principal y devolver las cartas extraídas
+devolverCartasExtraidas() {
+  if (this.cartasExtraidas.length === 0) {
+    return null; // No hay cartas para devolver
+  }
+  const cartasDevueltas = [...this.cartasExtraidas]; // Copia de las cartas extraídas
+  while (this.cartasExtraidas.length > 0) {
+    const cartaDevuelta = this.cartasExtraidas.pop(); // Elimina la última carta del array de cartas extraídas
+    this.cartas.push(cartaDevuelta); // Agrega la carta devuelta al mazo principal
+  }
+  return cartasDevueltas;
+}
   
 }
 

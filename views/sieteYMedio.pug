@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1= title
+  .juego-container(style='text-align: center;')
+    img.mazo-boca-abajo(src=backCardImage, alt='Mazo de cartas boca abajo', style='width: 150px; height: auto; margin: 20px 0;')
+    .botones-juego
+      form(action='/image/extraerCartaSieteYMedio' method='POST' style='display: inline-block; margin-right: 10px;')
+        button.btn.btn-primary(type='submit') Jugar
+      form(action='/image/plantarse' method='POST' style='display: inline-block; margin-right: 10px;')
+        button.btn.btn-primary(type='submit') Plantarse
+      form(action='/image/reiniciarSiete' method='POST' style='display: inline-block;')
+        button.btn.btn-primary(type='submit') Reiniciar Juego
+    .cartas-jugador(style='margin-top: 20px;')
+    if cartaExtraida
+      img(src=cartaExtraida.rutaImagen, alt='Carta Extraída', style='width: 100px; height: auto;')
+    p Total de Puntos: #{total}
+    if message
+      p(style='color: red;')= message

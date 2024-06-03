@@ -31,17 +31,7 @@ class Baraja {
       [this.cartas[i], this.cartas[j]] = [this.cartas[j], this.cartas[i]];
     }
   }
-  /*
-  extraerCartaAleatoria() {
-    if (this.cartas.length === 0) {
-      return null; // No hay cartas en la baraja
-    }
-    const cartaIndex = Math.floor(Math.random() * this.cartas.length);
-    const cartaExtraida = this.cartas.splice(cartaIndex, 1)[0];
-    console.log("Valor de la carta extraída:", cartaExtraida.valor);
-    console.log("Palo de la carta extraída:", cartaExtraida.palo);
-    return new Naipe(cartaExtraida.palo, cartaExtraida.valor); // Devuelve la carta extraída como un objeto Naipe
-  }*/
+
   extraerCartaAleatoria() {
     if (this.cartas.length === 0) {
       return null; // No hay cartas en la baraja
@@ -55,7 +45,19 @@ class Baraja {
     return naipe; // Devuelve la carta extraída como un objeto Naipe
   }
 
-
+  calcularTotalPuntos() {
+    let total = 0;
+    for (const carta of this.cartasExtraidas) {
+      const valor = parseInt(carta.valor);
+      total += valor > 9 ? 0.5 : valor; // Suma el valor de la carta, a menos que sea mayor que 9, en cuyo caso suma 0.5
+    }
+    return total;
+  }
+  
+  reiniciarBaraja() {
+    this.cartas = Baraja.generarBarajaEspañola();
+    this.cartasExtraidas = [];
+  }
 
   extraerPrimeraCarta() {
     if (this.cartas.length === 0) {

@@ -15,7 +15,7 @@ router.post('/', (req, res) => {
       return res.status(500).send('Error reading directory');
     }
     // Inicializar la baraja con las cartas del directorio
-    baraja.inicializarBarajaEspañola(files);
+    baraja.inicializarBarajaEspañola();
     res.render('imagenesBaraja', { files });
   });
 });
@@ -29,13 +29,15 @@ router.post('/barajar', (req, res) => {
   res.render('barajar', { title: 'Baraja Española', files: rutaImagenes });
 });
 
-router.post('/extraerCarta', (req, res) => {
+const extraerCartaAleatoria = (req, res) => {
   const cartaExtraida = baraja.extraerCartaAleatoria();
   if (!cartaExtraida) {
     return res.status(400).send({ message: 'No hay más cartas en la baraja' });
   }
   res.render('cartaExtraida', { title: 'Carta Extraída', rutaImagen: cartaExtraida.rutaImagen });
-});
+};
+
+router.post('/extraerCarta', extraerCartaAleatoria);
 
 
 router.post('/extraerPrimeraCarta', (req, res) => {
@@ -62,137 +64,92 @@ router.post('/inicializarBaraja', (req, res) => {
     if (err) {
       return res.status(500).send('Error reading directory');
     }
-    // Inicializar la baraja con las cartas del directorio
-    baraja.inicializarBarajaEspañola(files);
+    baraja.inicializarBarajaEspañola();
     res.render('imagenesBaraja', { files });
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-router.post('/', (req, res) => {
-  fs.readdir(directoryPath, (err, files) => {
-    if (err) {
-      return res.status(500).send('Error reading directory');
-    }
-    res.render('imagenesBaraja', { files });
+//Inicializa el juego
+router.post('/siete', (req, res) => {
+  res.render('sieteYMedio', {
+    title: 'Juego del Siete y Medio',
+    backCardImage: '/images/parteTrasera/Trasera.png',
+    cartaExtraida: null
   });
 });
 
-
-// Función para barajar la baraja
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-let baraja = [];
-
-// Ruta para inicializar y mostrar las imágenes
-router.get('/', (req, res) => {
-  fs.readdir(directoryPath, (err, files) => {
-    if (err) {
-      return res.status(500).send('Error reading directory');
+// Ruta para extraer una carta en el juego del Siete y Medio
+router.post('/extraerCartaSieteYMedio', (req, res) => {
+  try {
+    const cartaExtraida = baraja.extraerCartaAleatoria();
+    if (!cartaExtraida) {
+      return res.status(400).send({ message: 'No hay más cartas en la baraja' });
     }
-    baraja = files;
-    res.render('imagenesBaraja', { title: 'Baraja Española', files: baraja });
-  });
-});
+    const total = baraja.calcularTotalPuntos();
+    if (total > 7.5) {
+      const mensaje = 'Has perdido. Tu puntuación supera 7.5.';
+      return res.render('sieteYMedio', {
+        title: 'Juego del Siete y Medio',
+        backCardImage: '/images/parteTrasera/Trasera.png',
+        cartaExtraida: cartaExtraida,
+        total: total,
+        message: mensaje
+      });
+    }
 
-// Ruta para barajar las imágenes
-router.post('/barajar', (req, res) => {
-    fs.readdir(directoryPath, (err, files) => {
-      if (err) {
-        return res.status(500).send('Error reading directory');
-      }
-      baraja = files;
-      baraja = shuffle([...baraja]); // Crea una copia del array y la baraja
-      res.render('imagenesBaraja', { title: 'Baraja Española', files: baraja });
+    // Renderizar la vista con la carta extraída y el total de puntos
+    res.render('sieteYMedio', {
+      title: 'Juego del Siete y Medio',
+      backCardImage: '/images/parteTrasera/Trasera.png',
+      cartaExtraida: cartaExtraida,
+      total: total
     });
-});
 
-let cartaExtraida;
-// Ruta para extraer una carta aleatoria
-router.post('/extraerCarta', (req, res) => {
-  if (baraja.length === 0) {
-    return res.status(400).send({ message: 'No hay más cartas en la baraja' });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
   }
-  const cartaIndex = Math.floor(Math.random() * baraja.length);
-  cartaExtraida = baraja.splice(cartaIndex, 1)[0]; // Almacena la carta extraída
-  res.render('cartaExtraida', { title: 'Carta Extraída', carta: cartaExtraida });
 });
 
-// Ruta para extraer la primera carta del mazo
-router.post('/extraerPrimeraCarta', (req, res) => {
-  if (baraja.length === 0) {
-    return res.status(400).send({ message: 'No hay más cartas en la baraja' });
-  }
-  cartaExtraida = baraja.shift(); // Extrae y elimina la primera carta del mazo
-  res.render('cartaExtraida', { title: 'Primera Carta Extraída', carta: cartaExtraida });
+// Ruta para reiniciar el juego del Siete y Medio
+router.post('/reiniciarSiete', (req, res) => {
+  baraja.reiniciarBaraja(); // Reinicia la baraja
+  res.redirect('/image/siete'); // Redirige a la página del juego inicializado
 });
 
-// Ruta para devolver la carta al mazo
-router.post('/devolverCarta', (req, res) => {
-  console.log(req.body.carta);
-  const carta = req.body.carta;
-  if (!carta) {
-    return res.status(400).send({ message: 'Falta información de la carta' });
-  }
-  // Agrega la carta devuelta al mazo
-  baraja.push(carta);
-  // Limpia la variable de la carta extraída
-  cartaExtraida = null;
-  res.send({ message: 'Carta devuelta al mazo exitosamente' });
-});
-
-// Ruta para inicializar la baraja
-router.post('/inicializarBaraja', (req, res) => {
-  fs.readdir(directoryPath, (err, files) => {
-    if (err) {
-      return res.status(500).send('Error reading directory');
-    }
-    // Guarda los nombres de los archivos en la baraja
-    baraja = files;
-    res.render('imagenesBaraja', { files });
+// Ruta para mostrar la página inicial del juego
+router.get('/siete', (req, res) => {
+  res.render('sieteYMedio', {
+    title: 'Juego del Siete y Medio',
+    backCardImage: '/images/parteTrasera/Trasera.png',
+    cartaExtraida: null,
+    total: 0,
+    message: null
   });
-});*/
+});
+
+// Ruta para manejar el botón "Plantarse"
+router.post('/plantarse', (req, res) => {
+  const total = baraja.calcularTotalPuntos();
+
+  // Determinar el resultado
+  let resultado;
+  if (total === 7.5) {
+    resultado = 'Has ganado';
+  } else {
+    resultado = Math.random() < 0.5 ? 'Has ganado' : 'Has perdido, gana la banca';
+  }
+
+  // Renderizar la vista con el resultado
+  res.render('sieteYMedio', {
+    title: 'Juego del Siete y Medio',
+    backCardImage: '/images/parteTrasera/Trasera.png',
+    cartaExtraida: null, 
+    total: total,
+    message: resultado
+  });
+
+  // Reiniciar la baraja después de mostrar el resultado
+  baraja.reiniciarBaraja();
+});
 
 
 module.exports = router;

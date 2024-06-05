@@ -20,6 +20,7 @@ router.post('/', (req, res) => {
   });
 });
 
+
 router.post('/barajar', (req, res) => {
   // Barajar la baraja
   baraja.barajarBaraja();
@@ -68,6 +69,17 @@ router.post('/inicializarBaraja', (req, res) => {
     res.render('imagenesBaraja', { files });
   });
 });
+//ruta para cargar desde el login la baraja
+router.get('/inicializarBaraja', (req, res) => {
+  fs.readdir(directoryPath, (err, files) => {
+    if (err) {
+      return res.status(500).send('Error reading directory');
+    }
+    baraja.inicializarBarajaEspañola();
+    res.render('imagenesBaraja', { files });
+  });
+});
+
 //Inicializa el juego
 router.post('/siete', (req, res) => {
   res.render('sieteYMedio', {

@@ -47,9 +47,9 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-const port = 3000;
+const port = 3001;
 // Iniciar el servidor
 app.listen(port, () => {
-  console.log(`Servidor ejecutándose en http://localhost:${port}`);
+  console.log(`Servidor ejecutándose en http://vps-90798686.vps.ovh.net:${port}`);
 });
 module.exports = app;

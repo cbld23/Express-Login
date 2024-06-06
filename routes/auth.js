@@ -20,7 +20,7 @@ router.post("/register", async (req, res) => {
   try {
     let user = await User.findOne({ where: { id } });
     if (user) {
-      return res.status(400).send("El usuario ya existe.");
+      return res.status(400).render("error", { message: "El usuario ya existe. Puede que no usted no haya confirmado su correo" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -60,10 +60,7 @@ router.post("/register", async (req, res) => {
     request
       .then((result) => {
         console.log("Correo de confirmación enviado:", result.body);
-        res.redirect("/auth/login");
-        return res
-          .status(200)
-          .send("Registro exitoso. Por favor, confirma tu correo electrónico.");
+        return res.status(400).render("error", { message: "Registro exitoso. Por favor, confirma tu correo electrónico." });
       })
       .catch((err) => {
         console.error("Error al enviar el correo:", err);
@@ -84,19 +81,17 @@ router.get("/confirm/:token", async (req, res) => {
   try {
     const user = await User.findOne({ where: { confirmationToken: token } });
     if (!user) {
-      return res.status(400).send("Token de confirmación inválido.");
+      return res.status(400).render("error", { message: "Token de confirmación inválido." });
     }
 
     user.confirmed = true;
     user.confirmationToken = null;
     await user.save();
 
-    return res
-      .status(200)
-      .send("Correo electrónico confirmado. Ya puedes iniciar sesión.");
+    return res.status(200).render("confirm", { message: "Correo electrónico confirmado. Ya puedes iniciar sesión." });
   } catch (error) {
     console.error(error);
-    return res.status(500).send("Error del servidor.");
+    return res.status(500).render("error", { message: "Error del servidor." });
   }
 });
 
@@ -157,7 +152,7 @@ router.get("/login", (req, res) => {
 
 // Ruta para el logout
 router.post("/logout", (req, res) => {
-  res.redirect("/auth/login");
+  res.redirect("login");
 });
 
 module.exports = router;

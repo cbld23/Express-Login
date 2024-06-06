@@ -53,7 +53,7 @@ router.post('/extraerPrimeraCarta', (req, res) => {
 router.post('/devolverCarta', (req, res) => {
   const cartasDevueltas = baraja.devolverCartasExtraidas();
   if (!cartasDevueltas) {
-    console.log('Error al devolver las cartas al mazo principal');
+    console.log('No hay cartas para devolver');
     return res.status(500).send({ message: 'Error al devolver las cartas al mazo principal' });
   }
   console.log('Cartas devueltas al mazo principal exitosamente');

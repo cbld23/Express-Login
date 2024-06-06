@@ -8,6 +8,7 @@ const { Sequelize } = require('sequelize');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const imagesRouter = require('./routes/image');
+const authRouter = require('./routes/auth');
 const bodyParser = require('body-parser');
 var app = express();
 
@@ -26,7 +27,7 @@ app.use(bodyParser.json());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/image', imagesRouter);
-
+app.use('/auth', authRouter); 
 app.use('/images', express.static('images'));
 
 

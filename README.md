@@ -10,4 +10,15 @@ api gratuito para este fin. En el archivo .env, se encuentran la clave pública 
 
 Los datos de los usuarios se guardan con sqlite, como base de datos.
 
-El proyecto se ejecuta en http://vps-90798686.vps.ovh.net:3001.
+## Configuración del entorno
+
+Antes de ejecutar el proyecto, asegúrate de crear un archivo `.env` en la raíz del proyecto. Con estas variables,
+
+MAILJET_API_KEY=your-mailjet-api-key
+MAILJET_API_SECRET=your-mailjet-api-secret
+
+Para obtener estas api-key, tienes que crear una cuenta en https://www.mailjet.com/es/,
+y en el apartado api, dispondrás de estas.
+
+
+El proyecto se ejecuta en http://localhost:3001

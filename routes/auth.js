@@ -7,8 +7,8 @@ const Mailjet = require("node-mailjet");
 
 // Configuración de Mailjet
 const mailjet = Mailjet.apiConnect(
-  "285baf08007e040c00e8994d102dbd9c",
-  "af58719dea7dedc36b3270c5832c17a1"
+  process.env.MAILJET_API_KEY,
+  process.env.MAILJET_API_SECRET
 );
 
 // Ruta para el registro
